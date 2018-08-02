@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
+import 'react-sortable-tree/style.css';
 
 import store from './store/store';
 import Drag from './components/drag';

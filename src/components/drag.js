@@ -8,20 +8,42 @@ import { fetchJSON } from '../actions/fetchAction';
 import store from '../store/store';
 
 class Drag extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      treeData: [
+        {
+          title: 'Chicken',
+          expanded: true,
+          children: [{ title: 'Egg' }],
+        },
+        {
+          title: 'Chicken',
+          expanded: true,
+          children: [{ title: 'Egg' }],
+        },
+
+      ],
+    };
+  }
 
   componentWillMount() {
     store.dispatch(fetchJSON());
   }
 
-  componentWillReceiveProps(newProps, props) {
-    console.log('newprops', newProps.trips);
+  componentWillReceiveProps(nextProps, prevState) {
+    console.log('newprops', nextProps.trips);
   }
 
 
   render() {
     return (
-      <div>
-        DRAGG DROP
+      <div className="drag">
+        <SortableTree
+          treeData={this.state.treeData}
+          onChange={treeData => this.setState({ treeData })}
+        />
       </div>
     );
   }
