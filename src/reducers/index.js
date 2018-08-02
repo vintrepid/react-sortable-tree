@@ -1,10 +1,7 @@
-const reducer = (state = {}, action) => {
-  switch (action.type) {
-    case 'GET':
-      console.log('GET REDUCER CALLED!');
-      break;
-    default:
-  }
-};
+import { combineReducers } from 'redux';
 
-module.exports = reducer;
+import fetchReducer from './fetchReducer';
+
+export default combineReducers({
+  fetch: fetchReducer,
+});

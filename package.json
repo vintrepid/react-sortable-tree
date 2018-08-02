@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "json-api-normalizer": "^0.4.11",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",
+    "redux-object": "^0.5.6",
     "redux-thunk": "^2.3.0"
   },
   "devDependencies": {

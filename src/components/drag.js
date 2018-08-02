@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
-import data from '../data.json';
+import { connect } from 'react-redux';
 
-export default class drag extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      trips: {},
-    };
-  }
+import { fetchJSON } from '../actions/fetchAction';
 
-  componentDidMount() {
-    console.log(data);
+class Drag extends Component {
+
+  componentWillMount() {
+    this.props.fetchJSON();
+    console.log('component willd mount');
+    console.log(this.props);
   }
 
   render() {
@@ -21,3 +19,10 @@ export default class drag extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  trips: state.fetch.trips,
+});
+
+export default connect(mapStateToProps, { fetchJSON })(Drag)
+;
