@@ -12,19 +12,7 @@ class Drag extends Component {
     super(props);
 
     this.state = {
-      treeData: [
-        {
-          title: 'Chicken',
-          expanded: true,
-          children: [{ title: 'Egg' }],
-        },
-        {
-          title: 'Chicken',
-          expanded: true,
-          children: [{ title: 'Egg' }],
-        },
-
-      ],
+      treeData: [],
     };
   }
 
@@ -33,6 +21,7 @@ class Drag extends Component {
   }
 
   componentWillReceiveProps(nextProps, prevState) {
+    this.setState({ treeData: nextProps.trips.days });
     console.log('newprops', nextProps.trips);
   }
 
