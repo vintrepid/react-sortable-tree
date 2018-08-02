@@ -1,28 +1,42 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import normalize from 'json-api-normalizer';
+import build from 'redux-object';
+import SortableTree from 'react-sortable-tree';
 
 import { fetchJSON } from '../actions/fetchAction';
+import store from '../store/store';
 
 class Drag extends Component {
 
   componentWillMount() {
-    this.props.fetchJSON();
-    console.log('component willd mount');
-    console.log(this.props);
+    store.dispatch(fetchJSON());
   }
+
+  componentWillReceiveProps(newProps, props) {
+    console.log('newprops', newProps.trips);
+  }
+
 
   render() {
     return (
       <div>
-        THIS IS DRAGG DROP
+        DRAGG DROP
       </div>
     );
   }
 }
 
-const mapStateToProps = state => ({
-  trips: state.fetch.trips,
-});
+const mapStateToProps = (state) => {
+  let trips = state.fetch.trips;
 
-export default connect(mapStateToProps, { fetchJSON })(Drag)
-;
+  if (trips) {
+    const normalizeData = normalize(state.fetch.trips);
+    const proposalObj = build(normalizeData, 'proposal', '23778');
+    trips = proposalObj;
+  }
+  return { trips };
+};
+
+
+export default connect(mapStateToProps)(Drag);

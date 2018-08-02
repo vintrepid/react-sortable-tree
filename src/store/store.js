@@ -13,6 +13,6 @@ const store = createStore(
   initialState,
   composeEnhancers(applyMiddleware(...middleware)),
 );
-store.subscribe(() => console.log('store updated', store));
+store.subscribe(() => console.log('store updated', store.getState()));
 
 export default store;
