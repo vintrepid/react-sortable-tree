@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "json-api-normalizer": "^0.4.11",
+    "lodash.sortby": "^4.7.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-redux": "^5.0.7",
