@@ -19,26 +19,38 @@ class Drag extends Component {
   }
 
   componentWillMount() {
+    // action dispatch to fetch json-api data from store
     store.dispatch(fetchJSON());
   }
 
   componentWillReceiveProps(nextProps, prevState) {
-    // sorting days by not brief and daynum
-    const sorted = sortBy(nextProps.trips.days, ['brief', 'daynum']);
-    // add subtitle property with calculated info.
+    // _sortBy() :: days by not brief and daynum
+    const sorted = sortBy(nextProps.trips.days, ['!brief', 'daynum']);
     this.addDisplayInfo(sorted);
+    // set state with initial tree structure
+    this.setState({ treeData: this.createRenderedTreeStructure(sorted) });
+  }
 
-    this.setState({ treeData: sorted });
-    console.log('newprops', nextProps.trips.days);
-    console.log('========sorted========');
+  createRenderedTreeStructure(array) {
+    const treeStructure = [];
+    for (let i = 0; i < array.length; i += 1) {
+      if (array[i].brief) {
+        treeStructure.push(array[i]);
+      } else {
+        const day = treeStructure[treeStructure.length - 1];
+        day.children ? day.children.push(array[i]) : day.children = [array[i]];
+      }
+    }
+    return treeStructure;
   }
 
   addDisplayInfo(array) {
+    // add day['subtitle'] with day, daynum, calculated date/ range, day of week
+    // subtitle is a react-sortable-tree built-in field
     const updatedDays = array.map((day) => {
       day.subtitle = `${day.day}, Day ${day.daynum}, Cal. Day, DayOfWk`;
       return day;
     });
-    console.log('addDisplay', updatedDays);
   }
 
 
@@ -65,7 +77,7 @@ class Drag extends Component {
                 }
                 }
               >
-                &times;
+              &times;
                 </button>,
             ],
           })}
