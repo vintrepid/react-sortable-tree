@@ -24,13 +24,15 @@ class Drag extends Component {
   }
 
   componentWillReceiveProps(nextProps, prevState) {
-    // _sortBy() :: days by not brief and daynum
+    // lodash _sortBy(days) :: by not brief and daynum
     const sorted = sortBy(nextProps.trips.days, ['!brief', 'daynum']);
+    // add calculated days/ headers
     this.addDisplayInfo(sorted);
     // set state with initial tree structure
     this.setState({ treeData: this.createRenderedTreeStructure(sorted) });
   }
 
+  // [{T}{F}{T}{F}{F}{T}..] => [ { T[{F}]} { T[{F}{F}]}..]
   createRenderedTreeStructure(array) {
     const treeStructure = [];
     for (let i = 0; i < array.length; i += 1) {
@@ -48,6 +50,7 @@ class Drag extends Component {
     // add day['subtitle'] with day, daynum, calculated date/ range, day of week
     // subtitle is a react-sortable-tree built-in field
     const updatedDays = array.map((day) => {
+      // TODO
       day.subtitle = `${day.day}, Day ${day.daynum}, Cal. Day, DayOfWk`;
       return day;
     });
@@ -62,25 +65,29 @@ class Drag extends Component {
         <SortableTree
           treeData={this.state.treeData}
           onChange={treeData => this.setState({ treeData })}
-          generateNodeProps={({ node, path }) => ({
-            buttons: [
-              <button
-                className="remove"
-                onClick={() => {
-                  this.setState(state => ({
-                    treeData: removeNodeAtPath({
-                      treeData: state.treeData,
-                      path,
-                      getNodeKey,
-                    }),
-                  }));
+          generateNodeProps={({ node, path }) => {
+            console.log('node >', node);
+            return ({
+              buttons: [
+                <button
+                  className="remove"
+                  onClick={() => {
+                    this.setState(state => ({
+                      treeData: removeNodeAtPath({
+                        treeData: state.treeData,
+                        path,
+                        getNodeKey,
+                      }),
+                    }));
+                  }
                 }
-                }
-              >
+                >
               &times;
                 </button>,
-            ],
-          })}
+              ],
+            });
+          }
+        }
         />
       </div>
     );

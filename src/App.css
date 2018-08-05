@@ -35,6 +35,7 @@
 
 .remove {
   color: #dc143c;
+  line-height: 1.5;
 }
 
 .remove:hover {
