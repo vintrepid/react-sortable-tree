@@ -55,18 +55,20 @@ class Drag extends Component {
   addDisplayInfo(array) {
     // add day['subtitle'] with day, daynum, calculated date/ range, day of week
     // subtitle is a react-sortable-tree built-in field
-    console.log('addDisplayInfo');
     return array.map((day, index) => {
+      day.subtitle = `Parent ${day.daynum}`;
       if (day.children && day.children.length > 1) {
-        // this is a parent node
-        // set its daynum to the index + 1
+        // parent node
         day.daynum = index + 1;
         day.subtitle = `Parent ${day.daynum}`;
-        // loop the childrens array to set their daynum prop.
+        // iterate on children[] -set daynum
         for (let i = 0; i < day.children.length; i += 1) {
           const newDayNum = day.children[i].daynum = i + 1;
           day.children[i].subtitle = `Child ${newDayNum}`;
         }
+      } else if (day.children && day.children.length === 1) {
+        // parent with one child
+        day.children[0].subtitle = `Child ${1}`;
       }
       return day;
     });
@@ -79,6 +81,7 @@ class Drag extends Component {
     return (
       <div className="drag">
         <SortableTree
+
           treeData={this.state.treeData}
           onChange={(treeData) => {
             const tree = this.addDisplayInfo(treeData);
@@ -86,8 +89,8 @@ class Drag extends Component {
           }}
           generateNodeProps={(rowInfo) => {
             const { node, path, treeIndex } = rowInfo;
+            this.addDisplayInfo(this.state.treeData);
             // node.daynum = path[0];
-
             // node.subtitle = `${node.day}, Day ${node.daynum}, Cal. Day, DayOfWk`;
             console.log('node >', node);
             console.log('path >', path);
