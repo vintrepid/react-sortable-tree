@@ -52,23 +52,27 @@ class Drag extends Component {
     return treeStructure;
   }
 
+  /**
+   *
+   *  Update day['subtitle'] w/ day, daynum, calculated date/ range, day of week
+   *
+   */
   addDisplayInfo(array) {
-    // add day['subtitle'] with day, daynum, calculated date/ range, day of week
-    // subtitle is a react-sortable-tree built-in field
     return array.map((day, index) => {
-      day.subtitle = `Parent ${day.daynum}`;
+      day.subtitle = `Day ${day.daynum} ${day.day}`;
       if (day.children && day.children.length > 1) {
         // parent node
         day.daynum = index + 1;
-        day.subtitle = `Parent ${day.daynum}`;
+        day.subtitle = `Day ${day.daynum} ${day.day}`;
         // iterate on children[] -set daynum
+        let parentIdx = index + 1;
         for (let i = 0; i < day.children.length; i += 1) {
-          const newDayNum = day.children[i].daynum = i + 1;
-          day.children[i].subtitle = `Child ${newDayNum}`;
+          day.children[i].subtitle = `Day ${parentIdx} ${day.day}`;
+          parentIdx += 1;
         }
       } else if (day.children && day.children.length === 1) {
         // parent with one child
-        day.children[0].subtitle = `Child ${1}`;
+        day.children[0].subtitle = `Day ${1} ${day.day}`;
       }
       return day;
     });
