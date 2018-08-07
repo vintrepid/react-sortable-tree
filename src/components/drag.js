@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import normalize from 'json-api-normalizer';
 import build from 'redux-object';
-import SortableTree, { removeNodeAtPath } from 'react-sortable-tree';
+import SortableTree, { removeNodeAtPath, walk } from 'react-sortable-tree';
 import sortBy from 'lodash.sortby';
 
 import { fetchJSON } from '../actions/fetchAction';
@@ -88,12 +88,12 @@ class Drag extends Component {
 
           treeData={this.state.treeData}
           onChange={(treeData) => {
-            const tree = this.addDisplayInfo(treeData);
-            this.setState({ treeData: tree });
+           // const tree = this.addDisplayInfo(treeData);
+            this.setState({ treeData });
           }}
           generateNodeProps={(rowInfo) => {
             const { node, path, treeIndex } = rowInfo;
-            this.addDisplayInfo(this.state.treeData);
+            // this.addDisplayInfo(this.state.treeData);
             // node.daynum = path[0];
             // node.subtitle = `${node.day}, Day ${node.daynum}, Cal. Day, DayOfWk`;
             console.log('node >', node);
@@ -101,7 +101,18 @@ class Drag extends Component {
             console.log('treeData', this.state.treeData);
             console.log('treeIndex', treeIndex);
             console.log('rowInfo', rowInfo);
-
+            walk({
+              treeData: this.state.treeData,
+              getNodeKey,
+              callback: (rowInfo) => {
+                if (rowInfo.node.hasOwnProperty('daynum')) {
+                  console.log('inside walk rowInfo', rowInfo);
+                  console.log('node.daynum', rowInfo.node.daynum);
+                  rowInfo.node.subtitle = `Day ${rowInfo.node.daynum} ${rowInfo.node.day}`;
+                }
+              },
+              ignoreCollapsed: true,
+            });
             return ({
               buttons: [
                 <button
