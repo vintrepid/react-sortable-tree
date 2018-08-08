@@ -65,6 +65,7 @@ class Drag extends Component {
         day.daynum = index + 1;
         day.subtitle = `Day ${day.daynum} ${day.day}`;
         // iterate on children[] -set daynum
+        // first child is the same index as the parent/ (same day)
         let parentIdx = index + 1;
         for (let i = 0; i < day.children.length; i += 1) {
           day.children[i].subtitle = `Day ${parentIdx} ${day.day}`;
@@ -78,6 +79,12 @@ class Drag extends Component {
     });
   }
 
+  addDepth(array) {
+    array.forEach((day) => {
+      // check for child[]
+        //
+    });
+  }
 
   render() {
     const getNodeKey = ({ treeIndex }) => treeIndex;
@@ -88,31 +95,21 @@ class Drag extends Component {
 
           treeData={this.state.treeData}
           onChange={(treeData) => {
-           // const tree = this.addDisplayInfo(treeData);
-            this.setState({ treeData });
+            const tree = this.addDisplayInfo(treeData);
+            this.setState({ treeData: tree });
           }}
           generateNodeProps={(rowInfo) => {
             const { node, path, treeIndex } = rowInfo;
-            // this.addDisplayInfo(this.state.treeData);
+            this.addDisplayInfo(this.state.treeData);
             // node.daynum = path[0];
             // node.subtitle = `${node.day}, Day ${node.daynum}, Cal. Day, DayOfWk`;
+
             console.log('node >', node);
             console.log('path >', path);
             console.log('treeData', this.state.treeData);
-            console.log('treeIndex', treeIndex);
+            console.log('treeIndex', treeIndex); // doesnt count hidden nodes
             console.log('rowInfo', rowInfo);
-            walk({
-              treeData: this.state.treeData,
-              getNodeKey,
-              callback: (rowInfo) => {
-                if (rowInfo.node.hasOwnProperty('daynum')) {
-                  console.log('inside walk rowInfo', rowInfo);
-                  console.log('node.daynum', rowInfo.node.daynum);
-                  rowInfo.node.subtitle = `Day ${rowInfo.node.daynum} ${rowInfo.node.day}`;
-                }
-              },
-              ignoreCollapsed: true,
-            });
+
             return ({
               buttons: [
                 <button
@@ -153,3 +150,17 @@ const mapStateToProps = (state) => {
 
 
 export default connect(mapStateToProps)(Drag);
+
+
+    // walk({
+    //   treeData,
+    //   getNodeKey,
+    //   callback: (rowInfo) => {
+    //     if (rowInfo.node.hasOwnProperty('daynum')) {
+    //       console.log('inside walk rowInfo', rowInfo);
+    //       console.log('node.daynum', rowInfo.node.daynum);
+    //       rowInfo.node.subtitle = `Day ${rowInfo.node.daynum} ${rowInfo.node.day}`;
+    //     }
+    //   },
+    //   ignoreCollapsed: true,
+    // });
