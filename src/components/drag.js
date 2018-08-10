@@ -17,9 +17,8 @@ class Drag extends Component {
       treeData: [],
       startDate: '',
     };
-    // this.addDisplayInfo.bind(this);
     this.createRenderedTreeStructure.bind(this);
-    this.dayMapper.bind(this);
+    this.addDayInfo.bind(this);
   }
 
   componentWillMount() {
@@ -32,7 +31,7 @@ class Drag extends Component {
     const sorted = sortBy(nextProps.trips.days, ['!brief', 'daynum']);
     // add calculated days/ headers
     // this.addDisplayInfo(sorted);
-    this.dayMapper(sorted);
+    this.addDayInfo(sorted);
     // set state with initial tree structure
     this.setState({
       treeData: this.createRenderedTreeStructure(sorted),
@@ -54,57 +53,28 @@ class Drag extends Component {
     return treeStructure;
   }
 
-  /**
-   *
-   *  Update day['subtitle'] w/ day, daynum, calculated date/ range, day of week
-   *
-   */
-  // addDisplayInfo(tree) {
-  //   return tree.map((day, index) => {
-  //     day.subtitle = `Day ${day.daynum} ${day.day}`;
-  //     if (day.children && day.children.length > 1) {
-  //       // parent node
-  //       day.daynum = index + 1;
-  //       day.subtitle = `Day ${day.daynum} ${day.day}`;
-  //       // iterate on children[] -set daynum
-  //       // first child is the same index as the parent/ (same day)
-  //       let parentIdx = index + 1;
-  //       for (let i = 0; i < day.children.length; i += 1) {
-  //         day.children[i].subtitle = `Day ${parentIdx} ${day.day}`;
-  //         parentIdx += 1;
-  //       }
-  //     } else if (day.children && day.children.length === 1) {
-  //       // parent with one child
-  //       day.children[0].subtitle = `Day ${index} ${day.day}`;
-  //     }
-  //     return day;
-  //   });
-  // }
-
-  dayMapper(tree) {
+  addDayInfo(tree) {
     let totalDays = 0;
-    let indexOfLastChild = null;
-    let treeIdx = 0;
-    let recentParent = 0;
-    return tree.map((day, index) => {
-      treeIdx += 1;
-      recentParent = index + 1;
-      totalDays += 1;
+    let treeIndex = 0;
 
+    return tree.map((day) => {
+      treeIndex += 1;
+      totalDays += 1;
       if (day.children) {
         const children = day.children;
-        totalDays = children.length;
-        indexOfLastChild = children.length - 1;
-        day.subtitle = `Day ${treeIdx} totalDays ${treeIdx} - ${totalDays}`; // add latchildofindex here w/ ter
-
+        totalDays = treeIndex + (children.length - 1);
+        const days = `${treeIndex}-${totalDays}`;
+        day.subtitle = `Day ${treeIndex} Days ${totalDays === 0 || totalDays === 1 ? 1 : days}`;
         for (let i = 0; i < children.length; i += 1) {
           if (i === 0) {
-            children[i].subtitle = `Day ${treeIdx}`;
+            children[i].subtitle = `Day ${treeIndex}`;
           } else {
-            treeIdx += 1;
-            children[i].subtitle = `Day ${treeIdx}`;
+            treeIndex += 1;
+            children[i].subtitle = `Day ${treeIndex}`;
           }
         }
+      } else {
+        day.subtitle = `Day ${treeIndex}`;
       }
       return day;
     });
@@ -118,21 +88,12 @@ class Drag extends Component {
         <SortableTree
           treeData={this.state.treeData}
           onChange={(treeData) => {
-            // const tree = this.addDisplayInfo(treeData);
-            const tree = this.dayMapper(treeData);
+            const tree = this.addDayInfo(treeData);
             this.setState({ treeData: tree });
           }}
           generateNodeProps={(rowInfo) => {
-            const { node, path, treeIndex } = rowInfo;
-            // this.addDisplayInfo(this.state.treeData);
-            // node.daynum = path[0];
-            // node.subtitle = `${node.day}, Day ${node.daynum}, Cal. Day, DayOfWk`;
-            this.dayMapper(this.state.treeData);
-            // console.log('node >', node);
-            // console.log('path >', path);
-            // console.log('treeData', this.state.treeData);
-            // console.log('treeIndex', treeIndex); // doesnt count hidden nodes
-            // console.log('rowInfo', rowInfo);
+            const { path } = rowInfo;
+            this.addDayInfo(this.state.treeData);
 
             return ({
               buttons: [
